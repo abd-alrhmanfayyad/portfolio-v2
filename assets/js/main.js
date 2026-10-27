@@ -231,7 +231,8 @@
     note.textContent = m.sending;
     try {
       const res = await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ name: data.name, email: data.email, message: data.message, _subject: "New message from your portfolio", _template: "table" }) });
-      if (!res.ok) throw new Error(res.status);
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok || String(j.success) !== "true") throw new Error(j.message || res.status);
       form.reset(); note.textContent = m.ok; note.classList.add("ok");
     } catch (err) { note.textContent = m.err; note.classList.add("err"); }
   });
